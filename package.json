@@ -1,0 +1,36 @@
+{
+  "name": "range",
+  "version": "1.0.0",
+  "description": "capitole-challenge",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve --config ./webpack.config.js --mode development --port 8080 --hot",
+    "build": "node_modules/.bin/webpack --config webpack.prod.js --mode production",
+    "test": "npm test"
+  },
+  "author": "Juan Faricelli",
+  "license": "MIT",
+  "keywords": [],
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "sass": "^1.36.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.8",
+    "@babel/plugin-transform-async-to-generator": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.8",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "mini-css-extract-plugin": "^2.1.0",
+    "react-hot-loader": "^4.13.0",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.46.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
+  }
+}

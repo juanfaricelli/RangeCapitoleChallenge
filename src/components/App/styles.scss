@@ -1,0 +1,22 @@
+
+.app {
+  &__container {
+    text-align: center;
+    padding: 20px;
+
+    h1 {
+      border: none;
+      margin: 20px auto ;
+      padding: 0 0;
+      font-family: Tahoma,Geneva,Arial,sans-serif;
+      font-weight: 700;
+      line-height: 1.3em;
+      text-transform: none;
+      color: #000;
+    
+      div {
+        font-size: 14px;
+      }
+    }
+  }
+}
