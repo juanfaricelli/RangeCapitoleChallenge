@@ -14,7 +14,7 @@ const Range = ({ min, max}) => {
   const [minPerc, setMinPerc] = useState(min);
   const [minInput, setMinInput] = useState(min);
   const [minInputValue, setMinInputValue] = useState(min);
-  const [maxPerc, setMaxPerc] = useState(max);
+  const [maxPerc, setMaxPerc] = useState(100);
   const [maxInput, setMaxInput] = useState(max);
   const [maxInputValue, setMaxInputValue] = useState(max);
   const [badRange, setBadRange] = useState(false);
@@ -54,6 +54,7 @@ const Range = ({ min, max}) => {
       const { clientX } = e;
       const translate = clientX - constainerLeft;
       const percentage = parseFloat((translate / constainerWidth * 100).toFixed(2));
+      const inputValues = parseFloat((translate / constainerWidth * max).toFixed(2));
       if (bulletType === MIN) {
         if (clientX < constainerLeft) {
           setMinPerc(0);
@@ -61,8 +62,8 @@ const Range = ({ min, max}) => {
           setMinPerc(100);
         } else {
           setMinPerc(percentage);
-          setMinInput(percentage + 2);
-          setMinInputValue(percentage);
+          setMinInput(inputValues + 2);
+          setMinInputValue(inputValues);
           setSelectedStyle({
             left: `${percentage}%`,
             width: `${maxPerc - percentage}%`,
@@ -77,8 +78,8 @@ const Range = ({ min, max}) => {
           const maxLimit = percentage - minPerc;
           if (maxLimit > 2) {
             setMaxPerc(percentage);
-            setMaxInput(percentage - 2);
-            setMaxInputValue(percentage);
+            setMaxInput(inputValues - 2);
+            setMaxInputValue(inputValues);
             setSelectedStyle({
               left: `${minPerc}%`,
               width: `${maxLimit}%`,

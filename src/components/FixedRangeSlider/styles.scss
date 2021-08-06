@@ -8,11 +8,13 @@
   
   &__track {
     &__container {
+      margin: auto;
       margin-top: 9px;
       max-width: 600px;
       position: relative;
       grid-column-start: 2;
       grid-column-end: line3;
+      width: 85%;
     }
 
     background: #ccc;
