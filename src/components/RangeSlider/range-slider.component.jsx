@@ -178,9 +178,4 @@ Range.propTypes = {
   max: number.isRequired,
 };
 
-Range.defaultProps = {
-  min: 0,
-  max: 100,
-};
-
 export default Range;
