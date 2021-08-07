@@ -1,5 +1,5 @@
 import React from 'react';
-const { string } = require('prop-types');
+import { string } from 'prop-types';
 
 import './styles.scss';
 
@@ -8,22 +8,22 @@ const Currency = ({ type }) => {
     default: '$',
     euro: '€',
     dollar: 'u$d',
-    libra:  '£'
-  }
+    libra: '£',
+  };
 
   return (
-    <div className="currency__container">
+    <div className="currency__container" data-testid="currency">
       {currencyConfig[type]}
     </div>
-  )
-}
+  );
+};
 
 Currency.propTypes = {
   type: string,
 };
 
 Currency.defaultProps = {
-  type: 'default'
+  type: 'default',
 };
 
 export default Currency;

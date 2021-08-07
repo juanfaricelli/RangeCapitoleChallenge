@@ -1,5 +1,6 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useState } from 'react';
-import { arrayOf, number } from "prop-types";
+import { arrayOf, number } from 'prop-types';
 
 import Currency from '../Currency/currency.component';
 
@@ -27,7 +28,7 @@ const FixedRange = ({ values }) => {
 
   const [selectedStyle, setSelectedStyle] = useState({
     left: `${minPerc}%`,
-    width: `${maxPerc - minPerc}%`
+    width: `${maxPerc - minPerc}%`,
   });
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const FixedRange = ({ values }) => {
   }, [windowSize]);
 
   const bulletPosition = (percentageType) => ({
-    transform: `translate(-50%) translateX(${percentageType / 100 * constainerWidth}px)`,
+    transform: `translate(-50%) translateX(${(percentageType / 100) * constainerWidth}px)`,
   });
 
   const onMouseDownHandler = (bulletPressed) => {
@@ -55,9 +56,11 @@ const FixedRange = ({ values }) => {
     if (dragging) {
       const { clientX } = e;
       const translate = clientX - constainerLeft;
-      const percentage = parseFloat((translate / constainerWidth * 100).toFixed(2));
-      const inputValue = (percentage * (values[values.length - 1] - values[0]) / 100) + values[0];
-      const inputValueToShow = values.find((item, i) => item <= inputValue && inputValue <= values[++i]);
+      const percentage = parseFloat(((translate / constainerWidth) * 100).toFixed(2));
+      const inputValue = ((percentage * (values[values.length - 1] - values[0])) / 100) + values[0];
+      const inputValueToShow = values.find(
+        (item, i) => item <= inputValue && inputValue <= values[i + 1],
+      );
       if (!inputValueToShow && bulletType === MAX) {
         setMaxInputValue(values[values.length - 1]);
       }
@@ -74,34 +77,33 @@ const FixedRange = ({ values }) => {
             width: `${maxPerc - percentage}%`,
           });
         }
+      } else if (clientX < constainerLeft) {
+        setMaxPerc(0);
+      } else if (clientX > constainerWidth + constainerLeft) {
+        setMaxPerc(100);
       } else {
-        if (clientX < constainerLeft) {
-          setMaxPerc(0);
-        } else if (clientX > constainerWidth + constainerLeft){
-          setMaxPerc(100);
-        } else {
-          const maxLimit = percentage - minPerc;
-          if (maxLimit > 2) {
-            setMaxPerc(percentage);
-            setMaxInputValue(inputValueToShow);
-            setSelectedStyle({
-              left: `${minPerc}%`,
-              width: `${maxLimit}%`,
-            });
-          }
+        const maxLimit = percentage - minPerc;
+        if (maxLimit > 2) {
+          setMaxPerc(percentage);
+          setMaxInputValue(inputValueToShow);
+          setSelectedStyle({
+            left: `${minPerc}%`,
+            width: `${maxLimit}%`,
+          });
         }
       }
     }
   };
 
   return (
-    <div className="fixed-range__container">
+    <div className="fixed-range__container" data-testid="fixed-range-component">
       <div className="fixed-range__input">
         <input
           id={MIN}
           type="number"
           value={minInputValue}
-          readOnly />
+          readOnly
+        />
         <Currency type="euro" />
       </div>
       <div
@@ -111,21 +113,22 @@ const FixedRange = ({ values }) => {
         onMouseLeave={onMouseUpHandler}
       >
         <div className="fixed-range__track">
-          <div className="fixed-range__track__selected"
+          <div
+            className="fixed-range__track__selected"
             style={selectedStyle}
-          ></div>
+          />
           <div
             className="fixed-range__track__bullet--min"
             style={bulletPosition(minPerc)}
             onMouseDown={() => onMouseDownHandler(MIN)}
             onMouseUp={onMouseUpHandler}
-          ></div>
+          />
           <div
             className="fixed-range__track__bullet--max"
             style={bulletPosition(maxPerc)}
             onMouseDown={() => onMouseDownHandler(MAX)}
             onMouseUp={onMouseUpHandler}
-          ></div>
+          />
         </div>
       </div>
       <div className="fixed-range__input">
@@ -133,19 +136,20 @@ const FixedRange = ({ values }) => {
           id={MAX}
           type="number"
           value={maxInputValue}
-          readOnly/>
+          readOnly
+        />
         <Currency type="euro" />
       </div>
     </div>
-  )
-}
+  );
+};
 
 FixedRange.propTypes = {
-  values: arrayOf(number).isRequired,
+  values: arrayOf(number),
 };
 
 FixedRange.defaultProps = {
-  values:  [0],
+  values: [0],
 };
 
 export default FixedRange;
