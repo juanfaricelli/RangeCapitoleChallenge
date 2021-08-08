@@ -10,11 +10,14 @@ import Component from './app.component';
 
 jest.mock('axios');
 const testId = 'app';
+const LOADING_MESSAGE = 'Loading...';
+const ERROR_MESSAGE = 'Error getting data from server, please try again later...';
+const HOME_TEXT = 'Mango - Capitole Challenge';
 
 test('App - Home content', () => {
   render(<Component />);
   expect(screen.getByTestId(testId)).toBeDefined();
-  expect(screen.getByTestId(testId)).toHaveTextContent('Mango - Capitole Challenge');
+  expect(screen.getByTestId(testId)).toHaveTextContent(HOME_TEXT);
 });
 
 test('App - RangeSlider content', async () => {
@@ -28,7 +31,7 @@ test('App - RangeSlider content', async () => {
 
   expect(screen.getByTestId(testId)).toBeDefined();
   fireEvent.click(screen.getByTestId('link-exercise1'));
-  await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+  await waitForElementToBeRemoved(() => screen.getByText(LOADING_MESSAGE));
   expect(screen.getByTestId('range-component')).toBeDefined();
 });
 
@@ -38,8 +41,8 @@ test('App - RangeSlider content fail to load', async () => {
 
   expect(screen.getByTestId(testId)).toBeDefined();
   fireEvent.click(screen.getByTestId('link-exercise1'));
-  await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
-  expect(screen.getByTestId(testId)).toHaveTextContent('Error getting data from server, please try again later...');
+  await waitForElementToBeRemoved(() => screen.getByText(LOADING_MESSAGE));
+  expect(screen.getByTestId(testId)).toHaveTextContent(ERROR_MESSAGE);
 });
 
 test('App - FixedRangeSlider content', async () => {
@@ -52,7 +55,7 @@ test('App - FixedRangeSlider content', async () => {
 
   expect(screen.getByTestId(testId)).toBeDefined();
   fireEvent.click(screen.getByTestId('link-exercise2'));
-  await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+  await waitForElementToBeRemoved(() => screen.getByText(LOADING_MESSAGE));
   expect(screen.getByTestId('fixed-range-component')).toBeDefined();
 });
 
@@ -62,6 +65,6 @@ test('App - FixedRangeSlider content fail to load', async () => {
 
   expect(screen.getByTestId(testId)).toBeDefined();
   fireEvent.click(screen.getByTestId('link-exercise2'));
-  await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
-  expect(screen.getByTestId(testId)).toHaveTextContent('Error getting data from server, please try again later...');
+  await waitForElementToBeRemoved(() => screen.getByText(LOADING_MESSAGE));
+  expect(screen.getByTestId(testId)).toHaveTextContent(ERROR_MESSAGE);
 });
