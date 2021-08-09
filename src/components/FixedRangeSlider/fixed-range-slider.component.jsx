@@ -9,7 +9,7 @@ import './styles.scss';
 
 const FixedRange = ({ values }) => {
   if (values.length === 0) {
-    values = [...values, ...[0, 1]];
+    values = [...[0, 1]];
   }
   values = values.sort((a, b) => a - b).filter((num) => num > -1);
   const CONTAINER_CLASS_NAME = '.fixed-range__track__container';
@@ -139,7 +139,7 @@ const FixedRange = ({ values }) => {
       >
         <div className="fixed-range__track">
           <div
-            className="fixed-range__track__selected"
+            className="fixed-range__track--selected"
             style={selectedStyle}
           />
           <Bullet position={minPerc} type={MIN} />
