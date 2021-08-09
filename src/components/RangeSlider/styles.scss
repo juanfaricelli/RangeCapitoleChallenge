@@ -21,7 +21,7 @@
     height: 4px;
     width: 100%;
 
-    &__selected {
+    &--selected {
       background: #96BAFF;
       height: 100%;
       position: relative;
@@ -63,7 +63,8 @@
     }
   }
 
-  &__message {
+  &__message { 
+    &--error  {
     grid-column-start: line2;
     grid-column-end: line2;
     grid-row-start: row1-start;
@@ -78,5 +79,5 @@
     font-weight: bolder;
     margin:10px;
     padding:10px 10px 10px 36px;
-  }
+  }}
 }

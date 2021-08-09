@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useState } from 'react';
-import { number } from 'prop-types';
+import { number, string } from 'prop-types';
 
 import Currency from '../Currency/currency.component';
 
@@ -30,18 +30,27 @@ const Range = ({ min, max }) => {
     width: `${maxPerc - minPerc}%`,
   });
 
+  const rangeCheck = () => {
+    if ((!max && !min) || (min > max) || (min < 0)) {
+      setBadRange(true);
+    } else {
+      setBadRange(false);
+    }
+  };
+
   useEffect(() => {
     setContainerWidth(document.querySelector(CONTAINER_CLASS_NAME).offsetWidth);
     setContainerLeft(document.querySelector(CONTAINER_CLASS_NAME).offsetLeft);
     window.addEventListener('resize', setWindowSize);
+    rangeCheck();
 
     return () => window.removeEventListener('resize', setWindowSize);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowSize]);
 
   const bulletPosition = (percentageType) => ({
     transform: `translate(-50%) translateX(${(percentageType / 100) * constainerWidth}px)`,
   });
-
   const onMouseDownHandler = (bulletPressed) => {
     setDragging(true);
     setBulletType(bulletPressed);
@@ -50,6 +59,15 @@ const Range = ({ min, max }) => {
     setDragging(false);
     setBulletType(null);
   };
+
+  const Bullet = ({ position, type }) => (
+    <div
+      className={`range__track__bullet--${type}`}
+      style={bulletPosition(position)}
+      onMouseDown={() => onMouseDownHandler(type)}
+      onMouseUp={onMouseUpHandler}
+    />
+  );
 
   const onMouseMoveHandler = (e) => {
     if (dragging) {
@@ -63,31 +81,34 @@ const Range = ({ min, max }) => {
         } else if (clientX > constainerWidth + constainerLeft) {
           setMinPerc(100);
         } else {
-          setMinPerc(percentage);
-          setMinInput(inputValues + 2);
-          setMinInputValue(inputValues);
-          setSelectedStyle({
-            left: `${percentage}%`,
-            width: `${maxPerc - percentage}%`,
-          });
+          const maxLimit = percentage - maxPerc;
+          if (maxLimit < -2) {
+            setMinPerc(percentage);
+            setMinInput(inputValues + 2);
+            setMinInputValue(inputValues);
+            setSelectedStyle({
+              left: `${percentage}%`,
+              width: `${maxPerc - percentage}%`,
+            });
+          }
         }
       } else if (clientX < constainerLeft) {
         setMaxPerc(0);
       } else if (clientX > constainerWidth + constainerLeft) {
         setMaxPerc(100);
       } else {
-        const maxLimit = percentage - minPerc;
-        if (maxLimit > 2) {
+        const minLimit = percentage - minPerc;
+        if (minLimit > 2) {
           setMaxPerc(percentage);
           setMaxInput(inputValues - 2);
           setMaxInputValue(inputValues);
           setSelectedStyle({
             left: `${minPerc}%`,
-            width: `${maxLimit}%`,
+            width: `${minLimit}%`,
           });
         }
       }
-      setBadRange(false);
+      rangeCheck();
     }
   };
 
@@ -126,9 +147,11 @@ const Range = ({ min, max }) => {
           id={MIN}
           type="number"
           value={minInputValue}
-          min="0"
+          min={min}
           max={maxInput}
           onChange={(e) => inputOnChangeHandler(e, MIN)}
+          aria-label="range-component-input-min"
+          data-testid="range-component-input-min"
         />
         <Currency type="euro" />
       </div>
@@ -140,21 +163,11 @@ const Range = ({ min, max }) => {
       >
         <div className="range__track">
           <div
-            className="range__track__selected"
+            className="range__track--selected"
             style={selectedStyle}
           />
-          <div
-            className="range__track__bullet--min"
-            style={bulletPosition(minPerc)}
-            onMouseDown={() => onMouseDownHandler(MIN)}
-            onMouseUp={onMouseUpHandler}
-          />
-          <div
-            className="range__track__bullet--max"
-            style={bulletPosition(maxPerc)}
-            onMouseDown={() => onMouseDownHandler(MAX)}
-            onMouseUp={onMouseUpHandler}
-          />
+          <Bullet position={minPerc} type={MIN} />
+          <Bullet position={maxPerc} type={MAX} />
         </div>
       </div>
       <div className="range__input">
@@ -163,14 +176,16 @@ const Range = ({ min, max }) => {
           type="number"
           value={maxInputValue}
           min={minInput}
-          max="100"
+          max={max}
           onChange={(e) => inputOnChangeHandler(e, MAX)}
+          aria-label="range-component-input-max"
+          data-testid="range-component-input-max"
         />
         <Currency type="euro" />
       </div>
       {badRange
         && (
-        <div className="range__message">
+        <div className="range__message--error" data-testid="error-message">
           🛑 Bad Range Selected. Please, try other range selection. 🛑
         </div>
         )}
@@ -181,6 +196,12 @@ const Range = ({ min, max }) => {
 Range.propTypes = {
   min: number.isRequired,
   max: number.isRequired,
+};
+
+// eslint-disable-next-line no-undef
+Bullet.propTypes = {
+  position: number.isRequired,
+  type: string.isRequired,
 };
 
 export default Range;
