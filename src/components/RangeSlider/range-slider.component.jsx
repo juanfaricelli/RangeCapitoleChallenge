@@ -59,7 +59,6 @@ const Range = ({ min, max }) => {
     setDragging(false);
     setBulletType(null);
   };
-
   const Bullet = ({ position, type }) => (
     <div
       className={`range__track__bullet--${type}`}
@@ -68,6 +67,10 @@ const Range = ({ min, max }) => {
       onMouseUp={onMouseUpHandler}
     />
   );
+  Bullet.propTypes = {
+    position: number.isRequired,
+    type: string.isRequired,
+  };
 
   const onMouseMoveHandler = (e) => {
     if (dragging) {
@@ -196,12 +199,6 @@ const Range = ({ min, max }) => {
 Range.propTypes = {
   min: number.isRequired,
   max: number.isRequired,
-};
-
-// eslint-disable-next-line no-undef
-Bullet.propTypes = {
-  position: number.isRequired,
-  type: string.isRequired,
 };
 
 export default Range;

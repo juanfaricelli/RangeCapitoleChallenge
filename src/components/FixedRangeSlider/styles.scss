@@ -56,27 +56,17 @@
 
     input {
       width: 55px;
+      border: none;
+      background-color: transparent;
+      font-weight: 600;
+      cursor: text;
+      &:focus-visible {
+        outline: none;
+      }
     }
     .currency__container {
       margin: 1px;
       margin-left: 5px;
     }
-  }
-
-  &__message {
-    grid-column-start: line2;
-    grid-column-end: line2;
-    grid-row-start: row1-start;
-    grid-row-end: row1-start;
-
-    background:#ffecec;
-    border-radius:10px;
-    border:1px solid #f5aca6;
-    color:#555;
-    font-family:Tahoma,Geneva,Arial,sans-serif;
-    font-size:11px;
-    font-weight: bolder;
-    margin:10px;
-    padding:10px 10px 10px 36px;
   }
 }

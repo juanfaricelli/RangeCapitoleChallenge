@@ -1,6 +1,7 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useEffect, useState } from 'react';
-import { arrayOf, number } from 'prop-types';
+import { arrayOf, number, string } from 'prop-types';
 
 import Currency from '../Currency/currency.component';
 
@@ -8,8 +9,9 @@ import './styles.scss';
 
 const FixedRange = ({ values }) => {
   if (values.length === 0) {
-    values.push(0);
+    values = [...values, ...[0, 1]];
   }
+  values = values.sort((a, b) => a - b).filter((num) => num > -1);
   const CONTAINER_CLASS_NAME = '.fixed-range__track__container';
   const MAX = 'max';
   const MIN = 'min';
@@ -42,7 +44,6 @@ const FixedRange = ({ values }) => {
   const bulletPosition = (percentageType) => ({
     transform: `translate(-50%) translateX(${(percentageType / 100) * constainerWidth}px)`,
   });
-
   const onMouseDownHandler = (bulletPressed) => {
     setDragging(true);
     setBulletType(bulletPressed);
@@ -50,6 +51,32 @@ const FixedRange = ({ values }) => {
   const onMouseUpHandler = () => {
     setDragging(false);
     setBulletType(null);
+  };
+  const Bullet = ({ position, type }) => (
+    <div
+      className={`range__track__bullet--${type}`}
+      style={bulletPosition(position)}
+      onMouseDown={() => onMouseDownHandler(type)}
+      onMouseUp={onMouseUpHandler}
+    />
+  );
+  Bullet.propTypes = {
+    position: number.isRequired,
+    type: string.isRequired,
+  };
+
+  const Input = ({ value, type }) => (
+    <input
+      id={type}
+      type="number"
+      value={value}
+      readOnly
+      data-testid={`fixed-range-component-input-${type}`}
+    />
+  );
+  Input.propTypes = {
+    value: number.isRequired,
+    type: string.isRequired,
   };
 
   const onMouseMoveHandler = (e) => {
@@ -70,12 +97,15 @@ const FixedRange = ({ values }) => {
         } else if (clientX > constainerWidth + constainerLeft) {
           setMinPerc(100);
         } else {
-          setMinPerc(percentage);
-          setMinInputValue(inputValueToShow);
-          setSelectedStyle({
-            left: `${percentage}%`,
-            width: `${maxPerc - percentage}%`,
-          });
+          const maxLimit = percentage - maxPerc;
+          if (maxLimit < -2) {
+            setMinPerc(percentage);
+            setMinInputValue(inputValueToShow);
+            setSelectedStyle({
+              left: `${percentage}%`,
+              width: `${maxPerc - percentage}%`,
+            });
+          }
         }
       } else if (clientX < constainerLeft) {
         setMaxPerc(0);
@@ -98,12 +128,7 @@ const FixedRange = ({ values }) => {
   return (
     <div className="fixed-range__container" data-testid="fixed-range-component">
       <div className="fixed-range__input">
-        <input
-          id={MIN}
-          type="number"
-          value={minInputValue}
-          readOnly
-        />
+        <Input type={MIN} value={minInputValue} data-testid="fixed-range-component-input-min" />
         <Currency type="euro" />
       </div>
       <div
@@ -117,27 +142,12 @@ const FixedRange = ({ values }) => {
             className="fixed-range__track__selected"
             style={selectedStyle}
           />
-          <div
-            className="fixed-range__track__bullet--min"
-            style={bulletPosition(minPerc)}
-            onMouseDown={() => onMouseDownHandler(MIN)}
-            onMouseUp={onMouseUpHandler}
-          />
-          <div
-            className="fixed-range__track__bullet--max"
-            style={bulletPosition(maxPerc)}
-            onMouseDown={() => onMouseDownHandler(MAX)}
-            onMouseUp={onMouseUpHandler}
-          />
+          <Bullet position={minPerc} type={MIN} />
+          <Bullet position={maxPerc} type={MAX} />
         </div>
       </div>
       <div className="fixed-range__input">
-        <input
-          id={MAX}
-          type="number"
-          value={maxInputValue}
-          readOnly
-        />
+        <Input type={MAX} value={maxInputValue} data-testid="fixed-range-component-input-max" />
         <Currency type="euro" />
       </div>
     </div>
@@ -149,7 +159,7 @@ FixedRange.propTypes = {
 };
 
 FixedRange.defaultProps = {
-  values: [0],
+  values: [0, 1],
 };
 
 export default FixedRange;

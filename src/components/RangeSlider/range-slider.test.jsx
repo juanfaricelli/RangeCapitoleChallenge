@@ -1,18 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-undef */
 import React from 'react';
-import {
-  render, screen,
-} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 
 import Component from './range-slider.component';
 
-jest.mock('axios');
 const testId = 'range-component';
-const testIdMinInput = 'range-component-input-min';
-const testIdMaxInput = 'range-component-input-max';
+const testIdMinInput = `${testId}-input-min`;
+const testIdMaxInput = `${testId}-input-max`;
 let sentence = '';
 let props;
 
